@@ -12,3 +12,5 @@ No extra information is needed from the user, only a unique username and a stron
 ## Technological stack
 
 The app will be released in various language / framework packages, however, the main deployed app will have one common database and one common API to access the application through various clients.
+
+Project Lead: [@realyuvishere](https://github.com/realyuvishere)
