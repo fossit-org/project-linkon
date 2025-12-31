@@ -27,7 +27,9 @@ spl_autoload_register(function ($class) {
     }
 
     $relativeClass = substr($class, $len);
-    $file = $baseDir . str_replace('\\', '/', strtolower(dirname($relativeClass))) . '/' . basename($relativeClass) . '.php';
+    // Convert namespace separators to directory separators first
+    $normalizedClass = str_replace('\\', '/', $relativeClass);
+    $file = $baseDir . strtolower(dirname($normalizedClass)) . '/' . basename($normalizedClass) . '.php';
 
     if (file_exists($file)) {
         require $file;
