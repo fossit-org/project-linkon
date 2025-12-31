@@ -11,12 +11,13 @@ No extra information is needed from the user, only a unique username and a stron
 - **Minimal User Data**: Only username and password required
 - **REST API**: Full API for integration with any client
 - **Portable Design**: Modular classes designed for easy porting to other languages
+- **No Dependencies**: Pure PHP - no Composer or external packages required
 
 ## Technical Requirements
 
 - PHP 8.0 or higher
-- MySQL/MariaDB, PostgreSQL, or SQLite
-- Apache with mod_rewrite (or nginx with equivalent configuration)
+- MySQL/MariaDB database
+- Apache with mod_rewrite (optional, for clean URLs)
 - OpenSSL extension
 - PDO extension
 
@@ -24,14 +25,14 @@ No extra information is needed from the user, only a unique username and a stron
 
 ```
 project-linkon/
+├── index.php               # Main entry point - just access this!
+├── .htaccess               # Apache URL rewriting (optional)
 ├── config/
 │   └── config.php          # Configuration file
 ├── database/
 │   └── schema.sql          # Database schema
 ├── public/
-│   ├── .htaccess           # Apache URL rewriting
-│   ├── index.php           # Front controller
-│   └── link.php            # Public link access
+│   └── link.php            # Public link display
 ├── src/
 │   ├── api/
 │   │   ├── user.php        # User API endpoint
@@ -44,32 +45,28 @@ project-linkon/
 │   │   ├── User.php        # User model
 │   │   └── Link.php        # Link model
 │   └── bootstrap.php       # Application bootstrap
-├── composer.json
 └── README.md
 ```
 
-## Installation
+## Quick Start (3 Steps)
 
-### 1. Clone the Repository
+### 1. Upload Files
 
-```bash
-git clone https://github.com/fossit-org/project-linkon.git
-cd project-linkon
-```
+Simply upload all files to your PHP server. No build step required!
 
-### 2. Configure Database
+### 2. Setup Database
 
-Create your MySQL database and import the schema:
+Import the database schema:
 
 ```bash
 mysql -u root -p < database/schema.sql
 ```
 
-Or run the SQL manually in your database client.
+Or copy the contents of `database/schema.sql` and run it in phpMyAdmin.
 
-### 3. Configure Application
+### 3. Configure
 
-Edit `config/config.php` with your settings:
+Edit `config/config.php` with your database credentials:
 
 ```php
 return [
@@ -80,44 +77,33 @@ return [
         'database' => 'linkon',
         'username' => 'your_username',
         'password' => 'your_password',
-        'charset' => 'utf8mb4',
     ],
     'encryption' => [
-        'method' => 'aes-256-gcm',
-        'key' => 'YOUR_SECURE_32_BYTE_KEY_HERE',  // Generate with: bin2hex(random_bytes(32))
+        'key' => 'YOUR_SECURE_KEY_HERE',  // Change this!
     ],
     'app' => [
         'base_url' => 'https://your-domain.com',
-        'link_length' => 8,
     ],
 ];
 ```
 
-### 4. Configure Web Server
+**That's it!** Access `index.php` in your browser and you'll see the system status.
 
-#### Apache
+## Web Server Configuration (Optional)
 
-Point your document root to the `public/` directory. The included `.htaccess` handles URL rewriting.
+For clean URLs without `index.php` in the path:
 
-```apache
-<VirtualHost *:80>
-    ServerName your-domain.com
-    DocumentRoot /path/to/project-linkon/public
-    
-    <Directory /path/to/project-linkon/public>
-        AllowOverride All
-        Require all granted
-    </Directory>
-</VirtualHost>
-```
+### Apache
 
-#### Nginx
+The included `.htaccess` file handles everything automatically if `mod_rewrite` is enabled.
+
+### Nginx
 
 ```nginx
 server {
     listen 80;
     server_name your-domain.com;
-    root /path/to/project-linkon/public;
+    root /path/to/project-linkon;
     index index.php;
 
     location / {
@@ -129,14 +115,12 @@ server {
         fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
         include fastcgi_params;
     }
+    
+    # Protect sensitive directories
+    location ~ ^/(config|src|database)/ {
+        deny all;
+    }
 }
-```
-
-### 5. Set Permissions
-
-```bash
-chmod 755 public/
-chmod 644 config/config.php
 ```
 
 ## API Reference
