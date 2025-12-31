@@ -20,9 +20,6 @@
     # Prevent clickjacking
     Header always set X-Frame-Options "SAMEORIGIN"
     
-    # Prevent XSS attacks
-    Header always set X-XSS-Protection "1; mode=block"
-    
     # Prevent MIME type sniffing
     Header always set X-Content-Type-Options "nosniff"
     
