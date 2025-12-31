@@ -17,10 +17,8 @@ require_once __DIR__ . '/../bootstrap.php';
 
 use Linkon\Models\User;
 
-// Set CORS headers
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+// Set CORS headers from configuration
+setCorsHeaders($config);
 
 // Handle preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -110,11 +108,6 @@ try {
                 $userId = requireAuth();
                 $data = getJsonBody();
                 validateRequired($data, ['current_password', 'new_password']);
-
-                // Load user
-                if ($user->authenticate($data['username'] ?? '', '')) {
-                    // This won't work, need to load differently
-                }
 
                 $userData = $user->findById($userId);
                 if ($userData && $user->authenticate($userData['username'], $data['current_password'])) {

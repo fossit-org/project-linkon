@@ -69,7 +69,9 @@ class DatabaseConnector
                 ]
             );
         } catch (PDOException $e) {
-            throw new PDOException("Database connection failed: " . $e->getMessage());
+            // Log the actual error for debugging, but don't expose details
+            error_log("Database connection failed: " . $e->getMessage());
+            throw new PDOException("Database connection failed");
         }
     }
 

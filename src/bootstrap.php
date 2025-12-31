@@ -6,9 +6,7 @@
  * loading configuration, and initializing core services.
  */
 
-// Error reporting (disable in production)
-error_reporting(E_ALL);
-ini_set('display_errors', 0);
+// Error reporting - configured based on environment
 
 // Set default timezone
 date_default_timezone_set('UTC');
@@ -48,6 +46,15 @@ function loadConfig(): array
 
 // Get configuration
 $config = loadConfig();
+
+// Configure error reporting based on debug setting
+if ($config['app']['debug'] ?? false) {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+} else {
+    error_reporting(E_ALL);
+    ini_set('display_errors', 0);
+}
 
 // Initialize services
 use Linkon\Classes\DatabaseConnector;
@@ -240,4 +247,17 @@ function requireAuth(): int
         errorResponse('Unauthorized', 401);
     }
     return $userId;
+}
+
+/**
+ * Set CORS headers based on configuration
+ * 
+ * @param array $config Application configuration
+ */
+function setCorsHeaders(array $config): void
+{
+    $origin = $config['app']['cors_origin'] ?? '*';
+    header("Access-Control-Allow-Origin: {$origin}");
+    header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type, Authorization');
 }

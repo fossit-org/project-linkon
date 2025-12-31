@@ -29,6 +29,7 @@ return [
         'base_url' => getenv('APP_BASE_URL') ?: 'http://localhost',
         'link_length' => 8,  // Length of generated short links
         'debug' => getenv('APP_DEBUG') ?: false,
+        'cors_origin' => getenv('CORS_ORIGIN') ?: '*',  // Set to specific domain in production
     ],
 
     // Password hashing configuration
