@@ -1,0 +1,15 @@
+# Installation marker file (generated during setup)
+config/.installed
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
